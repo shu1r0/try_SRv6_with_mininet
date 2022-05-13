@@ -1,8 +1,5 @@
 from mininet.cli import CLI
 from mininet.net import Mininet
-from mininet.node import Node
-from mininet.cli import CLI
-from mininet.net import Mininet
 from mininet.log import setLogLevel
 from mininet.node import Node
 
@@ -72,8 +69,6 @@ def main():
 
     net.addLink(r5, r6, intfName1="r5_r6", intfName2="r6_r5")
 
-    net.start()
-
     h1.cmd("ip -6 addr add fc00:1::2/64 dev h1_r1")
     h1.cmd("ip -6 route add default dev h1_r1 via fc00:1::1")
     r1.cmd("ip -6 addr add fc00:1::1/64 dev r1_h1")
@@ -117,9 +112,8 @@ def main():
     r1.cmd("ip -6 route add fc00:3::/64 encap seg6 mode encap segs fc00:a::2,fc00:d::2,fc00:aa::2 dev r1_r2")
     r6.cmd("ip -6 route add fc00:1::/64 encap seg6 mode encap segs fc00:ab::1,fc00:e::1,fc00:b::1 dev r6_r5")
 
-
+    net.start()
     CLI(net)
-
     net.stop()
 
 

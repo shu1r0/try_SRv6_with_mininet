@@ -53,6 +53,16 @@ sudo service openvswitch-switch start
 SCRIPT
 
 # ------------------------------------------------------------
+# install FRR
+# ------------------------------------------------------------
+$install_frr = <<SCRIPT
+curl -s https://deb.frrouting.org/frr/keys.asc | sudo apt-key add -
+FRRVER="frr-stable"
+echo deb https://deb.frrouting.org/frr $(lsb_release -s -c) $FRRVER | sudo tee -a /etc/apt/sources.list.d/frr.list
+sudo apt update -y && sudo apt install -y frr frr-pythontools
+SCRIPT
+
+# ------------------------------------------------------------
 # install Lubutu Desktop
 # ------------------------------------------------------------
 $install_lubuntu = <<SCRIPT
@@ -81,6 +91,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # install package
     config.vm.provision 'shell', inline: $install_package
     config.vm.provision 'shell', inline: $install_mininet
+    config.vm.provision 'shell', inline: $install_frr
     config.vm.provision 'shell', inline: $install_lubuntu
 
     # config virtual box
