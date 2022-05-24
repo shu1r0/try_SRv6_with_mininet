@@ -199,8 +199,8 @@ def main():
         intf2 = str(n2)+"_"+str(n1)
         net.addLink(n1, n2, intfName1=intf1, intfName2=intf2)
         
-        ipv6_1 = "fc00::{}:1:0:0/96".format(block)
-        ipv6_2 = "fc00::{}:2:0:0/96".format(block)
+        ipv6_1 = "fc00::{}:1:0:0/80".format(block)
+        ipv6_2 = "fc00::{}:2:0:0/80".format(block)
         n1.cmd("ip -6 addr add {} dev {}".format(ipv6_1, intf1))
         n2.cmd("ip -6 addr add {} dev {}".format(ipv6_2, intf2))
     
@@ -223,8 +223,8 @@ def main():
     def set_link_hosts(r, h1, h2, block):
         
         def set_link_host(r, n, block):
-            ipv6_1 = "fc00::{}:1:0:0/96".format(block)
-            ipv6_2 = "fc00::{}:2:0:0/96".format(block)
+            ipv6_1 = "fc00::{}:1:0:0/80".format(block)
+            ipv6_2 = "fc00::{}:2:0:0/80".format(block)
             ipv4_1 = "192.168.{}.1/24".format(block)
             ipv4_2 = "192.168.{}.2/24".format(block)
             intf1 = str(r)+"_"+str(n)
@@ -235,8 +235,8 @@ def main():
             r.cmd("ip -6 addr add {} dev {}".format(ipv6_1, intf1))
             n.cmd("ip -6 addr add {} dev {}".format(ipv6_2, intf2))
             
-            n.cmd("ip route add default dev {} via {}".format(intf2, ipv4_1))
-            n.cmd("ip -6 route add default dev {} via {}".format(intf2, ipv6_1))
+            n.cmd("ip route add default dev {} via {}".format(intf2, ipv4_1.split("/")[0]))
+            n.cmd("ip -6 route add default dev {} via {}".format(intf2, ipv6_1.split("/")[0]))
             
         set_link_host(r, h1, block)
         set_link_host(r, h2, int(block)+1)
@@ -296,10 +296,10 @@ def main():
     set_frr_leaf(l3, "3.3.3.3", 65201, s3, s4)
     set_frr_leaf(l4, "3.3.3.4", 65202, s3, s4)
     
-    for n in net.nameToNode.values():
-        if isinstance(n, FRR):
-            for i in n.nameToIntf.keys():
-                n.vtysh_cmd(no_ipv6_nd.format(i))
+    # for n in net.nameToNode.values():
+    #     if isinstance(n, FRR):
+    #         for i in n.nameToIntf.keys():
+    #             n.vtysh_cmd(no_ipv6_nd.format(i))
     
     
     CLI(net)
